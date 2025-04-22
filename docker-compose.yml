@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  nginx-shield:
+    build: .
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - target_server
+    networks:
+      - shieldnet
+    volumes:
+      - ./nginx_logs:/var/log/nginx  # Mounting local 'nginx_logs' directory to container's log directory
+
+  target_server:
+    image: nginx
+    ports:
+      - "8080:80"
+    networks:
+      - shieldnet
+
+networks:
+  shieldnet:
+    driver: bridge
