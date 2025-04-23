@@ -7,16 +7,16 @@ services:
       - "80:80"
       - "443:443"
     depends_on:
-      - target_server
+      - webapp
     networks:
       - shieldnet
     volumes:
       - ./nginx_logs:/var/log/nginx  # Mounting local 'nginx_logs' directory to container's log directory
 
-  target_server:
-    image: nginx
-    ports:
-      - "8080:80"
+  webapp:
+    build:
+      context: ./nextjs-webapp # Point to the Next.js app directory
+    # No ports needed here, accessed internally by nginx-shield
     networks:
       - shieldnet
 
