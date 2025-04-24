@@ -1,26 +1,22 @@
 version: '3.8'
 
 services:
-  nginx-shield:
-    build: .
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - webapp
-    networks:
-      - shieldnet
-    volumes:
-      - ./nginx_config/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx_config/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./nginx_config/blocked_ips.conf:/etc/nginx/conf.d/blocked_ips.conf:rw
-      - ./nginx_logs:/var/log/nginx:rw
-
   webapp:
     build:
       context: ./nextjs-webapp
-    networks:
-      - shieldnet
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount host Nginx logs (read-only) into the container
+      # IMPORTANT: Ensure 'C:/nginx/logs' is the correct path on your HOST system
+      - type: bind
+        source: C:/nginx/logs  # Path on your Windows host
+        target: /var/log/nginx_host # Path inside the container
+        read_only: true
+
+# networks:
+#   shieldnet:
+#     driver: bridge
 
 networks:
   shieldnet:
