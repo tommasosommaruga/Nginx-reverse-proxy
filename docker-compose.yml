@@ -11,12 +11,14 @@ services:
     networks:
       - shieldnet
     volumes:
-      - ./nginx_logs:/var/log/nginx  # Mounting local 'nginx_logs' directory to container's log directory
+      - ./nginx_config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx_config/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx_config/blocked_ips.conf:/etc/nginx/conf.d/blocked_ips.conf:rw
+      - ./nginx_logs:/var/log/nginx:rw
 
   webapp:
     build:
-      context: ./nextjs-webapp # Point to the Next.js app directory
-    # No ports needed here, accessed internally by nginx-shield
+      context: ./nextjs-webapp
     networks:
       - shieldnet
 
