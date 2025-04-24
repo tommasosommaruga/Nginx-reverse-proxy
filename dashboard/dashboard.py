@@ -115,7 +115,7 @@ app.layout = dbc.Container([
     ], className="mb-4"),
 
     dbc.Row([
-        dbc.Col(dcc.Graph(id="world-map"), width=12),
+        dbc.Col(dcc.Graph(id="world-map"), width=12, style={'display': 'flex', 'justify-content': 'center'}),
     ]),
     dbc.Row([
         dbc.Col(dcc.Graph(id="reqs-over-time"), width=6),
@@ -197,9 +197,17 @@ def update(n, start_date, end_date, ip_contains, url_contains, ua_contains, meth
         zoom=1,
         title="Geolocation Heatmap (IP-based)"
     )
+    world_fig.update_layout(
+        height=600,  # Adjust the height (in pixels)
+        width=1200,   # Adjust the width (in pixels)
+        margin={"r": 0, "t": 30, "l": 0, "b": 0},  # Optional: adjust margins for better layout
+        geo=dict(
+            showcoastlines=True, coastlinecolor="Black",
+            projection_type="natural earth"  # You can change projection type as needed
+        )
+    )
 
-
-    df['binned_time'] = df['time'].dt.floor(f'{bin_size}min')
+    df['binned_time'] = df['time'].dt.floor(f'{bin_size}min')  # 'T' stands for minutes
     time_counts = df['binned_time'].value_counts().sort_index().reset_index()
     time_counts.columns = ['time', 'count']
     time_fig = px.bar(time_counts, x='time', y='count', title=f"Requests Over Time (Bin: {bin_size}min)")
